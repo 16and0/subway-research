@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>차세대 지하철 네트워크 알고리즘 연구</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── NAV ────────────────────────────────────────────────── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <span class="nav-logo">SUBWAY<span class="accent">ALG</span></span>
+    <ul class="nav-links">
+      <li><a href="#overview">개요</a></li>
+      <li><a href="#algorithm">알고리즘</a></li>
+      <li><a href="#viz">시각화</a></li>
+      <li><a href="#results">결과</a></li>
+      <li><a href="#conclusion">결론</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-bg">
+    <img src="images/map.png" alt="서울 지하철 노선도" class="hero-map" />
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="badge">제72회 경기도과학전람회 · 산업부문 (산-34)</div>
+    <h1>경제성과 신뢰성을 고려한<br>차세대 지하철 네트워크 생성<br>알고리즘 연구</h1>
+    <p class="hero-sub">그래프 위상 구조를 중심으로</p>
+    <div class="hero-metrics">
+      <div class="hm-item"><span class="hm-val">3</span><span class="hm-label">알고리즘</span></div>
+      <div class="hm-item"><span class="hm-val">403</span><span class="hm-label">지하철역</span></div>
+      <div class="hm-item"><span class="hm-val">0.93</span><span class="hm-label">FT (신뢰성)</span></div>
+      <div class="hm-item"><span class="hm-val">0.09</span><span class="hm-label">Cent (분산성)</span></div>
+    </div>
+    <a href="#overview" class="hero-btn">연구 살펴보기 ↓</a>
+  </div>
+</section>
+
+<!-- ── OVERVIEW ───────────────────────────────────────────── -->
+<section id="overview" class="section">
+  <div class="container">
+    <div class="section-label">OVERVIEW</div>
+    <h2 class="section-title">세 가지 접근 방법</h2>
+    <p class="section-desc">
+      도시 철도망 설계를 순수 수학·알고리즘으로 접근합니다. 서로 다른 위상학적 방법론으로 제작한
+      세 종류의 노선도를 서울시 403개 역 데이터와 Mumford3 벤치마크 네트워크에 적용하여 비교 분석했습니다.
+    </p>
+
+    <div class="algo-cards">
+      <!-- 점균류 -->
+      <div class="algo-card">
+        <div class="algo-icon" style="background:#4C72B0">🧫</div>
+        <h3>점균류 알고리즘</h3>
+        <div class="algo-tag">Physarum polycephalum</div>
+        <p>황색망사점균의 먹이 탐지 메커니즘을 하겐-푸아죄유 법칙으로 수치화합니다. 관의 전도도와 유량을 반복 계산하여 고밀도 네트워크를 형성합니다.</p>
+        <div class="algo-stats">
+          <span class="stat good">FT · λ₂ 우수</span>
+          <span class="stat bad">TL 경제성 낮음</span>
+        </div>
+        <div class="algo-formula">dD/dt = f(Q) – D</div>
+      </div>
+      <!-- NSGA-2 -->
+      <div class="algo-card">
+        <div class="algo-icon" style="background:#DD8452">🧬</div>
+        <h3>NSGA-2</h3>
+        <div class="algo-tag">다목적 유전 알고리즘</div>
+        <p>TL·WMD·λ₂ 세 가지 상충하는 목적함수를 동시에 최적화하여 파레토 최적해 집합을 진화적으로 탐색합니다. 50개의 균형 잡힌 노선도를 도출합니다.</p>
+        <div class="algo-stats">
+          <span class="stat neutral">파레토 50개 해</span>
+          <span class="stat neutral">의사결정 도구</span>
+        </div>
+        <div class="algo-formula">minimize (TL, WMD) · maximize (λ₂)</div>
+      </div>
+      <!-- 호선 기반 -->
+      <div class="algo-card featured">
+        <div class="featured-label">본 연구 핵심</div>
+        <div class="algo-icon" style="background:#55A868">🗺️</div>
+        <h3>호선 기반 알고리즘</h3>
+        <div class="algo-tag">계층적 위상 설계</div>
+        <p>재귀적 볼록 껍질 박피로 골격을 형성 후, 재귀 봉합·MST 환승·사잇각 지름길 탐색을 거치는 결정론적 8단계 알고리즘입니다.</p>
+        <div class="algo-stats">
+          <span class="stat good">FT 0.93 달성</span>
+          <span class="stat good">Cent 실제 대비 50%↓</span>
+        </div>
+        <div class="algo-formula">Convex Hull → MST → Shortcut</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ALGORITHM DETAIL ────────────────────────────────────── -->
+<section id="algorithm" class="section dark-section">
+  <div class="container">
+    <div class="section-label">ALGORITHM</div>
+    <h2 class="section-title">호선 기반 알고리즘 작동 원리</h2>
+    <p class="section-desc" style="color:#94a3b8">
+      8개의 순차적 단계로 구성된 결정론적 알고리즘입니다. 동일한 입력에 대해 항상 동일한 결과를 보장합니다.
+    </p>
+
+    <div class="steps-grid">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>역사 위치 시각화</h4><p>위도·경도를 km 단위 직교좌표로 변환하여 지구 곡률 왜곡을 제거합니다.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>볼록 껍질 재귀 분할</h4><p>QuickHull로 외곽 껍질을 추출 → 최원거리 두 역을 종점으로 설정 → 가중치 <code>d³</code> 다익스트라 경로를 호선으로 채택합니다.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>초소형 파편 흡수</h4><p>역수 3개 이하의 파편을 탐지하고, 가장 가까운 대형 호선에 편입시킵니다.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>거대 파편 재귀 봉합</h4><p>단절된 구간의 최근접 역 쌍에 재귀적 분할 정복 봉합 함수를 호출하여 연결합니다.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h4>MST 환승 링크</h4><p>호선 그래프에 최소 신장 트리를 적용해 사이클 없이 모든 호선을 단일 연결망으로 통합합니다.</p></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><h4>사잇각 기반 지름길</h4><p>우회율 <code>dy ≥ λ·dx (λ=7)</code> 조건 충족 시, 사잇각 60° 기준으로 본선 편입/지선 추가를 결정합니다.</p></div></div>
+      <div class="step"><div class="step-num">7</div><div class="step-body"><h4>성능 지표 연산</h4><p>TL·WMD·FT·Cent·λ₂를 계산합니다.</p></div></div>
+      <div class="step"><div class="step-num">8</div><div class="step-body"><h4>시각화 출력</h4><p>호선별 독립 분해도 및 통합 노선도를 렌더링합니다.</p></div></div>
+    </div>
+
+    <div class="anim-block">
+      <h3 style="color:white; margin-bottom:1rem; font-size:1.1rem;">단계별 진행 애니메이션</h3>
+      <img src="images/animation.gif" alt="알고리즘 단계별 애니메이션" class="anim-gif" />
+    </div>
+  </div>
+</section>
+
+<!-- ── VISUALIZATIONS ─────────────────────────────────────── -->
+<section id="viz" class="section">
+  <div class="container">
+    <div class="section-label">VISUALIZATIONS</div>
+    <h2 class="section-title">연구 시각화 갤러리</h2>
+    <p class="section-desc">이미지를 클릭하면 크게 볼 수 있습니다.</p>
+
+    <div class="viz-grid">
+
+      <div class="viz-card wide" onclick="openModal(this)">
+        <img src="images/stages.png" alt="알고리즘 단계별 진행" />
+        <div class="viz-caption">
+          <strong>단계별 진행 과정</strong>
+          <span>1단계 역사 위치부터 6단계 지름길 편입까지의 네트워크 진화</span>
+        </div>
+      </div>
+
+      <div class="viz-card" onclick="openModal(this)">
+        <img src="images/hull.png" alt="볼록껍질 동심 레이어" />
+        <div class="viz-caption">
+          <strong>볼록껍질 동심 레이어</strong>
+          <span>헐 경계(점선)와 다익스트라 경로(실선)의 계층 구조</span>
+        </div>
+      </div>
+
+      <div class="viz-card" onclick="openModal(this)">
+        <img src="images/hop.png" alt="홉 거리 등고선 지도" />
+        <div class="viz-caption">
+          <strong>홉 거리 등고선 지도</strong>
+          <span>매개중심성 상위 3개 역 기준 접근성 시각화</span>
+        </div>
+      </div>
+
+      <div class="viz-card" onclick="openModal(this)">
+        <img src="images/shortcut.png" alt="지름길 선정 통계" />
+        <div class="viz-caption">
+          <strong>지름길 선정 통계</strong>
+          <span>후보 쌍 산점도와 λ=7 기준선, 우회율 분포 히스토그램</span>
+        </div>
+      </div>
+
+      <div class="viz-card" onclick="openModal(this)">
+        <img src="images/lambda.png" alt="λ 민감도 분석" />
+        <div class="viz-caption">
+          <strong>λ 임계값 민감도 분석</strong>
+          <span>λ 변화에 따른 TL·WMD·FT·지름길 수 변화 (λ=3~13)</span>
+        </div>
+      </div>
+
+      <div class="viz-card" onclick="openModal(this)">
+        <img src="images/map.png" alt="통합 노선도" />
+        <div class="viz-caption">
+          <strong>호선 기반 서울 지하철 통합 노선도</strong>
+          <span>Convex Hull 기반으로 생성된 최종 노선 구조</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── RESULTS ────────────────────────────────────────────── -->
+<section id="results" class="section alt-section">
+  <div class="container">
+    <div class="section-label">RESULTS</div>
+    <h2 class="section-title">성능 지표 비교</h2>
+    <p class="section-desc">서울시 실제 지하철과 호선 기반 알고리즘 결과를 4가지 지표로 비교합니다.</p>
+
+    <div class="metrics-layout">
+      <div class="chart-box">
+        <canvas id="metricsChart"></canvas>
+      </div>
+      <div class="metrics-table-wrap">
+        <table class="metrics-table">
+          <thead>
+            <tr><th>지표</th><th>실제 서울</th><th>호선 알고리즘</th><th>변화</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>TL</strong> <small>(총 길이, km)</small></td>
+              <td>423.93</td>
+              <td>444.08</td>
+              <td class="bad-change">+4.8%</td>
+            </tr>
+            <tr>
+              <td><strong>WMD</strong> <small>(가중 평균 이동 거리, km)</small></td>
+              <td>12.07</td>
+              <td>12.61</td>
+              <td class="bad-change">+4.5%</td>
+            </tr>
+            <tr>
+              <td><strong>FT</strong> <small>(고장 허용성, 높을수록 좋음)</small></td>
+              <td>0.8886</td>
+              <td>0.9300</td>
+              <td class="good-change">+4.7%</td>
+            </tr>
+            <tr>
+              <td><strong>Cent</strong> <small>(매개 중심성 집중도, 낮을수록 좋음)</small></td>
+              <td>0.1798</td>
+              <td>0.0888</td>
+              <td class="good-change">−50.6%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="finding-box">
+          <h4>핵심 발견</h4>
+          <p>
+            총 길이와 평균 이동 거리가 소폭 증가하지만,
+            <strong>고장 허용성(FT) 향상</strong>과
+            <strong>매개 중심성 집중도(Cent)의 50% 감소</strong>를 달성합니다.
+            강남·잠실 등 소수 환승역 장애 시 전역적 붕괴를 막는
+            강건성을 확보합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lambda-note">
+      <h3>지름길 임계값(λ) 분석</h3>
+      <p>
+        λ가 감소할수록 더 많은 지름길이 허용되어 <strong>WMD가 감소</strong>하지만,
+        간선 교체로 인한 <strong>FT 저하</strong>와 <strong>TL 증가</strong>가 동반됩니다.
+        λ=7은 경제성과 신뢰성 사이의 균형점으로 설정되었습니다.
+      </p>
+      <img src="images/lambda.png" alt="λ 분석" class="lambda-img" onclick="openModal(this)" style="cursor:pointer" />
+    </div>
+  </div>
+</section>
+
+<!-- ── CONCLUSION ─────────────────────────────────────────── -->
+<section id="conclusion" class="section dark-section">
+  <div class="container">
+    <div class="section-label">CONCLUSION</div>
+    <h2 class="section-title">결론 및 고찰</h2>
+
+    <div class="conclusion-grid">
+      <div class="concl-card">
+        <div class="concl-icon">🧫</div>
+        <h4>점균류 알고리즘</h4>
+        <p>높은 FT와 λ₂를 달성하지만 TL이 실제 대비 3배 이상으로 경제성이 낮습니다. γ=1.0 임계값에서 네트워크 붕괴가 발생함을 야코비안 행렬로 수학적으로 증명했습니다.</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-icon">🧬</div>
+        <h4>NSGA-2</h4>
+        <p>TL·WMD·λ₂ 상충 관계를 파레토 최적해로 균형화합니다. 실제 서울 지하철을 최적해 공간에 투영하면 신뢰성(λ₂) 측면에서 개선 여지가 확인됩니다.</p>
+      </div>
+      <div class="concl-card highlight-card">
+        <div class="concl-icon">🗺️</div>
+        <h4>호선 기반 알고리즘</h4>
+        <p>결정론적 설계로 재현성을 보장합니다. 볼록 껍질 우회 경로가 FT를 실제 대비 상회하는 수준으로 끌어올리며, Cent의 50% 감소로 트래픽 분산이 획기적으로 향상됩니다.</p>
+      </div>
+    </div>
+
+    <div class="future-work">
+      <h3>향후 연구 방향</h3>
+      <div class="fw-items">
+        <div class="fw-item">세 알고리즘의 단계적 결합</div>
+        <div class="fw-item">실제 수요 데이터 정밀 반영</div>
+        <div class="fw-item">호선 기반 알고리즘의 최적성 수학적 보장</div>
+        <div class="fw-item">스마트 시티 지능형 교통 시스템 적용</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <p class="footer-title">경제성과 신뢰성을 고려한 차세대 지하철 네트워크 생성 알고리즘 연구</p>
+    <p class="footer-sub">제72회 경기도과학전람회 · 산업부문 · 2026</p>
+    <p class="footer-ref">
+      데이터: 서울 열린데이터광장 서울시 역사마스터 정보 &nbsp;|&nbsp;
+      참고: Tero et al. (2010) Science; Král et al. (2019) Applied Sciences
+    </p>
+  </div>
+</footer>
+
+<!-- ── IMAGE MODAL ────────────────────────────────────────── -->
+<div id="modal" class="modal" onclick="closeModal()">
+  <span class="modal-close">✕</span>
+  <img id="modal-img" src="" alt="" />
+  <p id="modal-caption"></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
