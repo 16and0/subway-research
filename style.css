@@ -635,20 +635,32 @@ footer {
 /* 비율 유지하며 한 화면에 들어오도록 높이 제한 */
 #stageSvg { width: 100%; height: auto; max-height: 72vh; display: block; margin: 0 auto; }
 
-/* 오른쪽 개념·수식 패널 — 길면 자체 스크롤 */
-.stage-right { min-width: 0; max-height: 78vh; overflow-y: auto; padding-right: .2rem; }
-.stage-concept { margin-top: 1rem; display: flex; flex-direction: column; gap: .8rem; }
-.stage-concept .eq-block { margin-bottom: 0; }
+/* 오른쪽 개념·수식 패널 — 촘촘하게 채워 한눈에 들어오도록 */
+.stage-right { min-width: 0; max-height: 82vh; overflow-y: auto; padding-right: .2rem; }
+.stage-concept { margin-top: .7rem; display: flex; flex-direction: column; gap: .5rem; }
+
+/* 패널 내부는 본문보다 조밀하게(내용은 그대로, 여백·글자만 압축) */
+.stage-concept .eq-block { margin-bottom: 0; padding: .55rem .8rem; }
+.stage-concept .eq-title { margin-bottom: .2rem; }
+.stage-concept .eq-body  { font-size: .8rem; }
+.stage-concept .eq-note  { font-size: .74rem; line-height: 1.5; margin-top: .2rem; }
+.stage-concept .katex-display { margin: .3rem 0; }
+.stage-concept .katex { font-size: .96em; }
+
+/* 상단 단계 정보도 컴팩트하게 */
+.stage-right .stage-info { margin-top: 0; padding: .8rem 1rem; }
+.stage-right .stage-info p { font-size: .84rem; line-height: 1.55; }
+
 .concept-goal {
-  font-size: .9rem; line-height: 1.6; color: #cbd5e1;
+  font-size: .84rem; line-height: 1.55; color: #cbd5e1;
   background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.3);
   border-left: 3px solid var(--blue); border-radius: 8px;
-  padding: .7rem .9rem;
+  padding: .55rem .8rem;
 }
 .section:not(.dark-section) .concept-goal { color: #334155; background: #eff6ff; border-color: #bfdbfe; border-left-color: var(--blue); }
 .concept-goal span {
-  display: inline-block; font-size: .72rem; font-weight: 800; color: white;
-  background: var(--blue); border-radius: 999px; padding: .1rem .55rem; margin-right: .5rem;
+  display: inline-block; font-size: .7rem; font-weight: 800; color: white;
+  background: var(--blue); border-radius: 999px; padding: .1rem .5rem; margin-right: .45rem;
   vertical-align: .05em;
 }
 .st-node { fill: #cbd5e1; transition: fill .25s, r .25s, opacity .25s; }
