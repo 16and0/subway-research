@@ -20,7 +20,7 @@
       <div class="concept-goal"><span>목적</span> 도시 외곽을 도는 굵은 호선 뼈대를 바깥에서 안으로 한 겹씩 생성한다.</div>
       <div class="eq-block">
         <div class="eq-title">볼록껍질 (Quickhull)</div>
-        <div class="eq-note">점들을 감싸는 최소 볼록 다각형. 껍질 위 가장 먼 두 역 $(u^*,v^*)=\\arg\\max\\lVert u-v\\rVert$을 호선의 양 종점으로 삼는다.</div>
+        <div class="eq-note">점들을 감싸는 최소 볼록 다각형(지도의 <strong>파란 점선</strong>). 껍질 위 가장 먼 두 역 $(u^*,v^*)=\\arg\\max\\lVert u-v\\rVert$을 호선의 양 종점으로 삼는다.</div>
       </div>
       <div class="eq-block">
         <div class="eq-title">다익스트라 뼈대 · 거리 세제곱 가중</div>
@@ -110,11 +110,34 @@
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-  // 레이어: 간선(아래) → 노드(위)
+  // 레이어: 간선(아래) → 볼록껍질 → 노드(위)
   const gEdges = document.createElementNS(SVGNS, 'g');
+  const gHull  = document.createElementNS(SVGNS, 'g');
   const gNodes = document.createElementNS(SVGNS, 'g');
   svg.appendChild(gEdges);
+  svg.appendChild(gHull);
   svg.appendChild(gNodes);
+
+  // ── 첫 번째(최외곽) 볼록껍질 — monotone chain ────────────────
+  function convexHull(pts) {
+    const p = pts.slice().sort((a, b) => a.x - b.x || a.y - b.y);
+    const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    const lo = [];
+    for (const q of p) { while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+    const up = [];
+    for (let i = p.length - 1; i >= 0; i--) { const q = p[i]; while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+    lo.pop(); up.pop(); return lo.concat(up);
+  }
+  const hull = convexHull(DATA.nodes.map(n => ({ x: n.x, y: n.y })));
+  const hullPoly = document.createElementNS(SVGNS, 'polygon');
+  hullPoly.setAttribute('points', hull.map(h => `${px(h.x)},${py(h.y)}`).join(' '));
+  hullPoly.setAttribute('fill', 'rgba(59,130,246,.06)');
+  hullPoly.setAttribute('stroke', '#3b82f6');
+  hullPoly.setAttribute('stroke-width', 1.6);
+  hullPoly.setAttribute('stroke-dasharray', '7 5');
+  hullPoly.setAttribute('opacity', 0.85);
+  gHull.appendChild(hullPoly);
+  gHull.style.display = 'none';
 
   // 모든 역 점은 항상 깔아둠 — 아주 옅게(검정 점 없앰)
   const HI = '#f59e0b';   // 변화 하이라이트 색(앰버)
@@ -159,6 +182,9 @@
     current = stageIdx;
     const stage = DATA.stages[stageIdx - 1];
     const prev  = stageIdx > 1 ? DATA.stages[stageIdx - 2] : null;
+
+    // 첫 번째 볼록껍질은 2단계에서만 표시
+    gHull.style.display = (stageIdx === 2) ? '' : 'none';
 
     // 이전 단계의 간선/연결역 (변화 감지용)
     const prevPairs  = new Set((prev ? prev.edges : []).map(e => pairKey(e.u, e.v)));
