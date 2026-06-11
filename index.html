@@ -27,11 +27,11 @@
     <span class="nav-logo">SUBWAY<span class="accent">ALG</span></span>
     <ul class="nav-links">
       <li><a href="#overview">개요</a></li>
-      <li><a href="#algo1">점균류</a></li>
-      <li><a href="#algo2">NSGA-2</a></li>
-      <li><a href="#algo3">호선 기반</a></li>
-      <li><a href="#compare">비교</a></li>
-      <li><a href="#conclusion">결론</a></li>
+      <li><a href="algo1.html">점균류</a></li>
+      <li><a href="algo2.html">NSGA-2</a></li>
+      <li><a href="algo3.html">호선 기반</a></li>
+      <li><a href="compare.html">비교</a></li>
+      <li><a href="conclusion.html">결론</a></li>
     </ul>
   </div>
 </nav>
@@ -91,21 +91,21 @@
     </div>
 
     <div class="algo-overview-cards">
-      <a href="#algo1" class="aoc">
+      <a href="algo1.html" class="aoc">
         <div class="aoc-num">01</div>
         <div class="aoc-icon">🧫</div>
         <h3>점균류 알고리즘</h3>
         <p>황색망사점균의 먹이 탐지를 하겐-푸아죄유 법칙으로 수치화한 생물 모방 알고리즘</p>
         <span class="aoc-tag">고신뢰성 · 저경제성</span>
       </a>
-      <a href="#algo2" class="aoc">
+      <a href="algo2.html" class="aoc">
         <div class="aoc-num">02</div>
         <div class="aoc-icon">🧬</div>
         <h3>NSGA-2</h3>
         <p>$TL \cdot WMD \cdot \lambda_2$ 세 목적함수를 동시에 최적화하는 다목적 진화 알고리즘</p>
         <span class="aoc-tag">파레토 최적해 · 의사결정 도구</span>
       </a>
-      <a href="#algo3" class="aoc featured-aoc">
+      <a href="algo3.html" class="aoc featured-aoc">
         <div class="aoc-badge">본 연구 핵심 제안</div>
         <div class="aoc-num">03</div>
         <div class="aoc-icon">🗺️</div>
@@ -117,368 +117,24 @@
   </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- ALGORITHM 1: 점균류 -->
-<!-- ============================================================ -->
-<section id="algo1" class="section dark-section">
+<!-- 세 알고리즘 상세 내용은 각각의 세부 페이지로 분리됨: algo1.html / algo2.html / algo3.html -->
+
+<!-- 비교/결론은 별도 페이지로 분리됨: compare.html / conclusion.html -->
+
+<!-- 다음 단계 안내 -->
+<section class="section alt-section">
   <div class="container">
-    <div class="section-label">ALGORITHM 01</div>
-    <h2 class="section-title">점균류 알고리즘</h2>
-    <p class="section-desc">황색망사점균(<em>Physarum polycephalum</em>)의 먹이 탐지 행동을 Hagen–Poiseuille 법칙으로 수치화합니다. 선행 연구(Tero et al., 2010)에서 36개 역에 적용하여 도쿄 철도망과 유사한 네트워크를 자생적으로 탐지함을 확인하였습니다. 본 연구에서는 서울시 313개 역 및 Mumford3 128개 역에 확장·적용하고 매개변수 $\gamma$에 따른 위상 변화를 수학적으로 분석합니다.</p>
-
-    <div class="algo-detail-layout">
-      <div class="ad-explain">
-        <h3>수학적 모델</h3>
-        <p>델로네 삼각분할로 구성된 초기 메쉬에서 출발하여, 흐름이 많은 관은 확장하고 적은 관은 수축시키는 적응형 피드백을 반복합니다.</p>
-
-        <div class="eq-block">
-          <div class="eq-title">유량 방정식 (Hagen–Poiseuille)</div>
-          <div class="eq-body">$$Q_{ij} = D_{ij} \cdot \frac{p_i - p_j}{L_{ij}}$$</div>
-          <div class="eq-note">$D_{ij}$: 관 전도도, $p_i$: 노드 $i$에서의 압력, $L_{ij}$: 관의 길이</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">전도도 변화율 (적응형 피드백)</div>
-          <div class="eq-body">$$\frac{dD_{ij}}{dt} = \alpha|Q_{ij}|^\gamma - \mu D_{ij}$$</div>
-          <div class="eq-note">$\alpha=10.0$, $\mu=0.6$, $\gamma$: 핵심 비선형 제어 변수</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">각 노드 유량 보존 (키르히호프 법칙)</div>
-          <div class="eq-body">$$\sum_j Q_{ij} = S_i \quad \Rightarrow \quad Lp = S$$</div>
-          <div class="eq-note">$L$: 전도도 가중 라플라시안, 평균 승하차량을 $S_i$로 설정</div>
-        </div>
-
-        <div class="key-finding">
-          <h4>핵심 발견 — $\gamma$에 따른 상전이</h4>
-          <ul>
-            <li><strong>저감마 $\gamma < 1.0$</strong>: 고밀도 네트워크, 높은 $FT \cdot \lambda_2$, 낮은 경제성</li>
-            <li><strong>최적 구간 $1.1 \lesssim \gamma \lesssim 1.4$</strong>: 경제성–신뢰성 균형점</li>
-            <li><strong>고감마 $\gamma > 1.6$</strong>: 트리 구조로 붕괴, $FT \cdot \lambda_2$ 급락</li>
-          </ul>
-          <p class="finding-note">야코비안 행렬 분석으로 $\gamma = 1$ 임계값에서의 네트워크 붕괴 조건을 수학적으로 증명</p>
-        </div>
-
-        <div class="eq-block" style="margin-top:1.2rem">
-          <div class="eq-title">네트워크 붕괴 수학적 증명 — 야코비안</div>
-          <div class="eq-body">$$\left.\frac{\partial \dot{D}_{23}}{\partial D_{23}}\right|_{D_{23}=0} = \alpha\gamma|Q_{23}|^{\gamma-1}\cdot\frac{\partial|Q_{23}|}{\partial D_{23}} - \mu$$</div>
-          <div class="eq-note">$\gamma \geq 1$이면 이 값 $< 0$ → $D_{23}=0$이 안정 평형점 → 간선 영구 소멸</div>
-        </div>
-      </div>
-
-      <div class="ad-visuals">
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/slime_gamma_map.png" alt="γ별 서울 노선도 변화" />
-          <div class="viz-cap-dark">
-            <strong>$\gamma$ 값에 따른 서울시 지하철 노선도 변화</strong>
-            <span>$\gamma=0.8$ (고밀도) → $1.3$ → $1.8$ → $2.3$ (트리 구조) — 실제 Matlab 시뮬레이션 결과</span>
-          </div>
-        </div>
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/slime_tradeoff.png" alt="MD vs α 트레이드오프" />
-          <div class="viz-cap-dark">
-            <strong>$\gamma$ 변화에 따른 효율성–신뢰성 트레이드오프</strong>
-            <span>Mean Distance(MD) vs. Alpha Index($\alpha$): $\gamma$ 증가 → 연결 다양성($\alpha$) 감소, 효율성 변화</span>
-          </div>
-        </div>
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/slime_gamma_networks.png" alt="γ별 네트워크 밀도" />
-          <div class="viz-cap-dark">
-            <strong>$\gamma=1.0$ (좌) / $1.6$ (중) / $2.2$ (우) 네트워크 밀도 비교</strong>
-            <span>반복 횟수 250회 수렴 결과 — $\gamma$ 증가에 따른 간선 소실 확인</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- ALGORITHM 2: NSGA-2 -->
-<!-- ============================================================ -->
-<section id="algo2" class="section">
-  <div class="container">
-    <div class="section-label">ALGORITHM 02</div>
-    <h2 class="section-title">NSGA-2 다목적 유전 알고리즘</h2>
-    <p class="section-desc">상충하는 세 목적함수 $TL$, $WMD$, $\lambda_2$를 동시에 만족하는 파레토 최적해 집합을 진화적으로 탐색합니다. 단일 최적해가 아닌 <strong>50개의 균형 잡힌 해 집합</strong>을 도출하여, 도시 계획가가 예산·안전 수준에 따라 의사결정할 수 있는 정량적 공간을 제공합니다.</p>
-
-    <div class="algo-detail-layout">
-      <div class="ad-explain">
-        <h3>수학적 모델</h3>
-        <p>노선도를 후보 간선의 이진 염색체로 인코딩합니다. 교차·변이 연산을 통해 세대를 진화시키며, 비지배 정렬과 Crowding Distance로 파레토 프론트의 다양성을 유지합니다.</p>
-
-        <div class="eq-block">
-          <div class="eq-title">다목적 최적화 문제</div>
-          <div class="eq-body">$$\min\,(TL,\; WMD), \quad \max\,\lambda_2$$</div>
-          <div class="eq-note">세 목적함수는 상충 관계(트레이드오프) — 단일 최적해 존재 불가</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">파레토 지배 조건</div>
-          <div class="eq-body">$$\mathbf{x} \succ \mathbf{y} \iff \forall i:\; f_i(\mathbf{x}) \leq f_i(\mathbf{y}) \;\wedge\; \exists j:\; f_j(\mathbf{x}) < f_j(\mathbf{y})$$</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">Crowding Distance (다양성 보존)</div>
-          <div class="eq-body">$$d_i = \sum_{m=1}^{M} \frac{\left|f_m(i+1) - f_m(i-1)\right|}{f_m^{\max} - f_m^{\min}}$$</div>
-          <div class="eq-note">$d_i$가 클수록 주변 밀집도 낮음 → 우선 선택하여 프론트 다양성 유지</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">대수적 연결성 $\lambda_2$ (목적함수)</div>
-          <div class="eq-body">$$L = D - A, \quad 0 = \lambda_1 \leq \lambda_2 \leq \cdots \leq \lambda_n$$</div>
-          <div class="eq-note">$\lambda_2 > 0$ iff 연결 그래프, 클수록 분리 저항 강함</div>
-        </div>
-
-        <div class="key-finding">
-          <h4>핵심 발견 — 실제 서울의 위치</h4>
-          <ul>
-            <li>$TL$·$WMD$ 기준: 파레토 프론트에 근접 (준수한 효율성)</li>
-            <li>$\lambda_2$ 기준: 프론트 하방 위치 → <strong>개선 여지 존재</strong></li>
-            <li>특정 환승역 집중으로 인한 구조적 취약점 확인</li>
-          </ul>
-          <p class="finding-note">현행 서울 지하철은 수요 집중 구간에 과도하게 최적화되어 강건성 측면에서 한계</p>
-        </div>
-      </div>
-
-      <div class="ad-visuals">
-        <div class="viz-card" onclick="openModal(this)">
-          <img src="images/pareto_3d.png" alt="3D 파레토 프론트" />
-          <div class="viz-caption">
-            <strong>$TL$–$WMD$–$\lambda_2$ 3차원 파레토 최적해 (50개)</strong>
-            <span>◆ 실제 서울 지하철 · ★ 호선 기반 알고리즘의 상대적 위치</span>
-          </div>
-        </div>
-        <div class="viz-card" onclick="openModal(this)">
-          <img src="images/pareto_2d.png" alt="2D 파레토 투영" />
-          <div class="viz-caption">
-            <strong>파레토 프론트 2차원 투영 (4가지 관점)</strong>
-            <span>$TL$–$WMD$, $TL$–$\lambda_2$, $TL$–$FT$, $WMD$–$\lambda_2$</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- ALGORITHM 3: 호선 기반 -->
-<!-- ============================================================ -->
-<section id="algo3" class="section dark-section">
-  <div class="container">
-    <div class="section-label">ALGORITHM 03</div>
-    <h2 class="section-title">호선 기반 노선도 생성 알고리즘</h2>
-    <p class="section-desc">결정론적 8단계 프로세스로 호선 구조를 명시적으로 생성합니다. 동일한 입력에 대해 항상 동일한 결과를 보장하며, 볼록 껍질의 재귀적 박피와 사잇각 판별을 통해 호선이라는 개념을 명시적으로 산출하는 최초의 위상 설계 알고리즘입니다.</p>
-
-    <div class="algo-detail-layout">
-      <div class="ad-explain">
-        <h3>핵심 수식</h3>
-        <p>볼록 껍질(Quickhull)로 외곽부터 내부로 층별로 역사를 배정합니다. 각 층의 가장 먼 두 역을 종점으로 하는 <strong>가중치 $d^3$ 다익스트라 경로</strong>가 호선 뼈대가 됩니다.</p>
-
-        <div class="eq-block">
-          <div class="eq-title">층별 종점 선정 (볼록껍질)</div>
-          <div class="eq-body">$$(u^*, v^*) = \arg\max_{u,\,v\,\in\,\mathrm{CH}(S_k)}\;\|u - v\|$$</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">다익스트라 뼈대 — 초 장거리 페널티</div>
-          <div class="eq-body">$$w(u,v) = \|u - v\|^3$$</div>
-          <div class="eq-note">거리의 세제곱 가중치로 실제 철도의 초장거리 노선 부재를 반영</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">재귀적 분할 정복 봉합 — 수선의 발 투영</div>
-          <div class="eq-body">$$t = \frac{(\mathbf{w}-\mathbf{u}) \cdot (\mathbf{v}-\mathbf{u})}{\|\mathbf{v}-\mathbf{u}\|^2},\quad t \in [0,1]$$</div>
-          <div class="eq-note">선분 $uv$ 위의 수선의 발 $\mathbf{p} = \mathbf{u}+t(\mathbf{v}-\mathbf{u})$로 최적 징검다리 역 탐색</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">MST 환승 링크 (호선 간 통합)</div>
-          <div class="eq-body">$$T^* = \arg\min_{T \subseteq G_\mathcal{L}}\;\sum_{(i,j)\in T} \min_{u\in L_i,\,v\in L_j}\|u-v\|$$</div>
-        </div>
-
-        <div class="eq-block">
-          <div class="eq-title">지름길 선정 조건 ($\lambda=7$, 사잇각 $\theta$)</div>
-          <div class="eq-body">$$d_y \;\geq\; \lambda \cdot d_x \;\wedge\; \mathrm{hops} > 3$$</div>
-          <div class="eq-note">$\theta < 60°$: 본선 편입 (기존 간선 교체) · $\theta \geq 60°$: 지선 편입</div>
-        </div>
-
-        <div class="steps-mini">
-          <div class="sm-step"><span>1</span>좌표 투영</div>
-          <div class="sm-arr">→</div>
-          <div class="sm-step"><span>2</span>볼록껍질 박피</div>
-          <div class="sm-arr">→</div>
-          <div class="sm-step"><span>3</span>파편 흡수</div>
-          <div class="sm-arr">→</div>
-          <div class="sm-step"><span>4</span>재귀 봉합</div>
-          <div class="sm-arr">→</div>
-          <div class="sm-step"><span>5</span>MST 환승</div>
-          <div class="sm-arr">→</div>
-          <div class="sm-step"><span>6</span>지름길 탐색</div>
-        </div>
-
-        <div class="key-finding">
-          <h4>핵심 발견 — 실제 서울 대비 성능</h4>
-          <ul>
-            <li>$FT$: $0.889 \to \mathbf{0.930}$ (고장 허용성 향상)</li>
-            <li>$Cent$: $0.180 \to \mathbf{0.089}$ (트래픽 집중도 50.5% 감소)</li>
-            <li>$TL$·$WMD$ 소폭 증가는 외곽 우회 경로 확보에 기인</li>
-          </ul>
-          <p class="finding-note">볼록껍질 우회 경로가 강건성을 끌어올리는 직접적 원인 — 강남·잠실 등 핵심역 장애 시 전역 붕괴 방지</p>
-        </div>
-      </div>
-
-      <div class="ad-visuals">
-        <!-- Mumford3 GIF — 변화가 명확히 보이는 소규모 네트워크 -->
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/mumford3_anim.gif" alt="Mumford3 단계별 알고리즘" />
-          <div class="viz-cap-dark">
-            <strong>Mumford3 네트워크 단계별 진행 (127개 역, 12프레임)</strong>
-            <span>볼록껍질 박피 8개 레이어 → 재귀 봉합 → MST → 지름길 편입. 논문 파라미터: $\Delta=6.48$, $\lambda=9$</span>
-          </div>
-        </div>
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/hull.png" alt="볼록껍질 동심 레이어" />
-          <div class="viz-cap-dark">
-            <strong>볼록껍질 동심 레이어 구조</strong>
-            <span>헐 경계(점선) · 다익스트라 경로(실선)의 계층적 구조 — 서울시 적용 결과</span>
-          </div>
-        </div>
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/shortcut.png" alt="지름길 통계" />
-          <div class="viz-cap-dark">
-            <strong>지름길 선정 통계 — $d_x$ vs $d_y$ 산점도</strong>
-            <span>$\lambda=7$ 기준선과 본선/지선 지름길 분류 분포</span>
-          </div>
-        </div>
-        <div class="viz-card-dark" onclick="openModal(this)">
-          <img src="images/hop.png" alt="홉 거리 등고선 지도" />
-          <div class="viz-cap-dark">
-            <strong>매개중심성 상위 역 기준 홉 거리 등고선 지도</strong>
-            <span>$Cent$ 감소의 시각적 근거 — 트래픽 분산 효과 확인</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COMPARISON -->
-<section id="compare" class="section alt-section">
-  <div class="container">
-    <div class="section-label">COMPARISON</div>
-    <h2 class="section-title">세 알고리즘 성능 비교</h2>
-    <p class="section-desc">서울시 지하철(403역) 적용 결과를 실제 서울 지하철과 비교합니다.</p>
-
-    <div class="compare-layout">
-      <div class="chart-box">
-        <canvas id="metricsChart"></canvas>
-      </div>
-      <div class="compare-table-wrap">
-        <table class="metrics-table">
-          <thead>
-            <tr><th>알고리즘</th><th>$TL$ (km)</th><th>$WMD$ (km)</th><th>$FT$</th><th>특징</th></tr>
-          </thead>
-          <tbody>
-            <tr class="row-reference">
-              <td><strong>실제 서울 지하철</strong></td>
-              <td>423.93</td><td>12.07</td><td>0.889</td>
-              <td class="tag-neutral">참조 기준</td>
-            </tr>
-            <tr>
-              <td>🧫 점균류 알고리즘</td>
-              <td>&gt;4000</td><td>~10</td><td>&gt;0.93</td>
-              <td class="tag-good">최고 신뢰성</td>
-            </tr>
-            <tr>
-              <td>🧬 NSGA-2 (최적해)</td>
-              <td>다양</td><td>다양</td><td>다양</td>
-              <td class="tag-neutral">파레토 50개 해</td>
-            </tr>
-            <tr class="row-highlight">
-              <td>🗺️ 호선 기반 알고리즘</td>
-              <td>444.08</td><td>12.61</td><td class="good-val">0.930</td>
-              <td class="tag-best">균형 최적</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="compare-summary">
-          <div class="cs-item cs-slime">
-            <div class="cs-icon">🧫</div>
-            <div><strong>점균류</strong>: 최고 신뢰성, $TL$은 실제의 10배 이상. $\gamma \in [1.1,\,1.4]$ 구간에서 균형점 존재.</div>
-          </div>
-          <div class="cs-item cs-nsga">
-            <div class="cs-icon">🧬</div>
-            <div><strong>NSGA-2</strong>: 경제성–신뢰성 파레토 최적해 제공. 실제 서울은 $\lambda_2$ 측면에서 프론트 하방에 위치.</div>
-          </div>
-          <div class="cs-item cs-algo">
-            <div class="cs-icon">🗺️</div>
-            <div><strong>호선 기반</strong>: $TL$ 소폭 증가 대비 $FT$ 향상 + $Cent$ 50% 감소. 결정론적 재현성 보장.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 실제 서울 지하철 + 추가 시각화 -->
-    <div class="extra-viz-grid">
-      <div class="viz-card" onclick="openModal(this)">
-        <img src="images/real_seoul.png" alt="실제 서울 지하철" />
-        <div class="viz-caption">
-          <strong>실제 서울 지하철 — 브릿지/사이클 분류 (Matlab)</strong>
-          <span>빨강=브릿지(취약) / 파랑=사이클(안정) · $TL=12.03,\ MD=0.403,\ FT=0.89$</span>
-        </div>
-      </div>
-      <div class="viz-card" onclick="openModal(this)">
-        <img src="images/lambda.png" alt="λ 민감도" />
-        <div class="viz-caption">
-          <strong>지름길 임계값 $\lambda$ 민감도 분석</strong>
-          <span>$\lambda=3\sim13$ 범위에서의 $TL,\ WMD,\ FT$ 변화</span>
-        </div>
-      </div>
-      <div class="viz-card" onclick="openModal(this)">
-        <img src="images/map.png" alt="통합 노선도" />
-        <div class="viz-caption">
-          <strong>호선 기반 알고리즘 — 서울시 통합 노선도</strong>
-          <span>$TL=444.08\ \mathrm{km},\ WMD=12.61\ \mathrm{km},\ FT=0.930,\ Cent=0.089$</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONCLUSION -->
-<section id="conclusion" class="section dark-section">
-  <div class="container">
-    <div class="section-label">CONCLUSION</div>
-    <h2 class="section-title">결론 및 고찰</h2>
-
-    <div class="conclusion-grid">
-      <div class="concl-card">
-        <div class="concl-icon">🧫</div>
-        <h4>점균류 알고리즘</h4>
-        <p>$FT$·$\lambda_2$ 측면에서 가장 우수하나 $TL$이 실제 대비 10배 이상으로 경제성이 낮습니다. 수학적 분석으로 <strong>$\gamma=1$ 임계값</strong>에서 네트워크 붕괴가 발생함을 야코비안 행렬로 증명했습니다. 실제 데이터에서의 임계값 편차는 간선 수에 따른 상호작용 지연으로 해석됩니다.</p>
-      </div>
-      <div class="concl-card">
-        <div class="concl-icon">🧬</div>
-        <h4>NSGA-2</h4>
-        <p>$TL$·$WMD$·$\lambda_2$ 상충 관계를 파레토 최적해 집합으로 균형화합니다. 실제 서울을 투영하면 <strong>효율성은 준수하나 $\lambda_2$ 개선 여지</strong>가 확인됩니다. 예산·안전 수준에 맞는 정량적 의사결정 공간을 제공합니다.</p>
-      </div>
-      <div class="concl-card highlight-card">
-        <div class="concl-icon">🗺️</div>
-        <h4>호선 기반 알고리즘</h4>
-        <p>결정론적 설계로 재현성을 보장합니다. $TL$·$WMD$ 소폭 증가에도 <strong>$FT$ 향상 + $Cent$ 50% 감소</strong>를 달성합니다. $\lambda$ 조정으로 경제성–신뢰성 맞춤 설계가 가능하며, 세 알고리즘 중 유일하게 실제 노선도 형태로 결과를 직접 산출합니다.</p>
-      </div>
-    </div>
-
-    <div class="future-work">
-      <h3>향후 연구 방향</h3>
-      <div class="fw-items">
-        <div class="fw-item">세 알고리즘의 단계적 결합</div>
-        <div class="fw-item">호선 기반 알고리즘의 최적성 수학적 보장</div>
-        <div class="fw-item">실제 지형·수요 데이터 정밀 반영</div>
-        <div class="fw-item">스마트 시티 지능형 교통 시스템 적용</div>
-      </div>
+    <div class="next-cta">
+      <a href="compare.html" class="next-cta-card">
+        <div class="section-label">COMPARISON</div>
+        <h3>세 알고리즘 성능 비교 →</h3>
+        <p>서울시 403역 적용 결과를 실제 서울 지하철과 정량 비교합니다.</p>
+      </a>
+      <a href="conclusion.html" class="next-cta-card">
+        <div class="section-label">CONCLUSION</div>
+        <h3>결론 및 고찰 →</h3>
+        <p>세 방법론의 종합 평가와 향후 연구 방향을 제시합니다.</p>
+      </a>
     </div>
   </div>
 </section>
@@ -499,7 +155,6 @@
   <p id="modal-caption"></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

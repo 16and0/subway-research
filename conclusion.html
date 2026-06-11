@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결론 및 고찰 — 차세대 지하철 네트워크 연구</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false}
+      ],
+      throwOnError:false
+    });"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">SUBWAY<span class="accent">ALG</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#overview">개요</a></li>
+      <li><a href="algo1.html">점균류</a></li>
+      <li><a href="algo2.html">NSGA-2</a></li>
+      <li><a href="algo3.html">호선 기반</a></li>
+      <li><a href="compare.html">비교</a></li>
+      <li><a href="conclusion.html" class="active">결론</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- CONCLUSION -->
+<section id="conclusion" class="section dark-section detail-page">
+  <div class="container">
+    <a href="index.html#overview" class="back-link">← 연구 개요로 돌아가기</a>
+    <div class="section-label">CONCLUSION</div>
+    <h2 class="section-title">결론 및 고찰</h2>
+
+    <div class="conclusion-grid">
+      <div class="concl-card">
+        <div class="concl-icon">🧫</div>
+        <h4>점균류 알고리즘</h4>
+        <p>$FT$·$\lambda_2$ 측면에서 가장 우수하나 $TL$이 실제 대비 10배 이상으로 경제성이 낮습니다. 수학적 분석으로 <strong>$\gamma=1$ 임계값</strong>에서 네트워크 붕괴가 발생함을 야코비안 행렬로 증명했습니다. 실제 데이터에서의 임계값 편차는 간선 수에 따른 상호작용 지연으로 해석됩니다.</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-icon">🧬</div>
+        <h4>NSGA-2</h4>
+        <p>$TL$·$WMD$·$\lambda_2$ 상충 관계를 파레토 최적해 집합으로 균형화합니다. 실제 서울을 투영하면 <strong>효율성은 준수하나 $\lambda_2$ 개선 여지</strong>가 확인됩니다. 예산·안전 수준에 맞는 정량적 의사결정 공간을 제공합니다.</p>
+      </div>
+      <div class="concl-card highlight-card">
+        <div class="concl-icon">🗺️</div>
+        <h4>호선 기반 알고리즘</h4>
+        <p>결정론적 설계로 재현성을 보장합니다. $TL$·$WMD$ 소폭 증가에도 <strong>$FT$ 향상 + $Cent$ 50% 감소</strong>를 달성합니다. $\lambda$ 조정으로 경제성–신뢰성 맞춤 설계가 가능하며, 세 알고리즘 중 유일하게 실제 노선도 형태로 결과를 직접 산출합니다.</p>
+      </div>
+    </div>
+
+    <div class="future-work">
+      <h3>향후 연구 방향</h3>
+      <div class="fw-items">
+        <div class="fw-item">세 알고리즘의 단계적 결합</div>
+        <div class="fw-item">호선 기반 알고리즘의 최적성 수학적 보장</div>
+        <div class="fw-item">실제 지형·수요 데이터 정밀 반영</div>
+        <div class="fw-item">스마트 시티 지능형 교통 시스템 적용</div>
+      </div>
+    </div>
+
+    <!-- 페이지 간 이동 -->
+    <div class="page-nav">
+      <a href="compare.html" class="page-nav-prev">← 이전: 세 알고리즘 성능 비교</a>
+      <a href="index.html" class="page-nav-next">처음으로 돌아가기 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p class="footer-title">경제성과 신뢰성을 고려한 차세대 지하철 네트워크 생성 알고리즘 연구</p>
+    <p class="footer-sub">제72회 경기도과학전람회 · 산업부문 · 2026</p>
+    <p class="footer-ref">데이터: 서울 열린데이터광장 서울시 역사마스터 정보 &nbsp;|&nbsp; Tero et al. (2010) <em>Science</em> &nbsp;|&nbsp; Král &amp; Král (2019) <em>Applied Sciences</em></p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" class="modal" onclick="closeModal()">
+  <span class="modal-close">✕</span>
+  <img id="modal-img" src="" alt="" />
+  <p id="modal-caption"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

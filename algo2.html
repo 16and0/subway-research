@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NSGA-2 다목적 유전 알고리즘 — 차세대 지하철 네트워크 연구</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false}
+      ],
+      throwOnError:false
+    });"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">SUBWAY<span class="accent">ALG</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#overview">개요</a></li>
+      <li><a href="algo1.html">점균류</a></li>
+      <li><a href="algo2.html" class="active">NSGA-2</a></li>
+      <li><a href="algo3.html">호선 기반</a></li>
+      <li><a href="index.html#compare">비교</a></li>
+      <li><a href="index.html#conclusion">결론</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- ALGORITHM 2: NSGA-2 -->
+<!-- ============================================================ -->
+<section id="algo2" class="section detail-page">
+  <div class="container">
+    <a href="index.html#overview" class="back-link">← 연구 개요로 돌아가기</a>
+    <div class="section-label">ALGORITHM 02</div>
+    <h2 class="section-title">NSGA-2 다목적 유전 알고리즘</h2>
+    <p class="section-desc">상충하는 세 목적함수 $TL$, $WMD$, $\lambda_2$를 동시에 만족하는 파레토 최적해 집합을 진화적으로 탐색합니다. 단일 최적해가 아닌 <strong>50개의 균형 잡힌 해 집합</strong>을 도출하여, 도시 계획가가 예산·안전 수준에 따라 의사결정할 수 있는 정량적 공간을 제공합니다.</p>
+
+    <div class="algo-detail-layout">
+      <div class="ad-explain">
+        <h3>수학적 모델</h3>
+        <p>노선도를 후보 간선의 이진 염색체로 인코딩합니다. 교차·변이 연산을 통해 세대를 진화시키며, 비지배 정렬과 Crowding Distance로 파레토 프론트의 다양성을 유지합니다.</p>
+
+        <div class="eq-block">
+          <div class="eq-title">다목적 최적화 문제</div>
+          <div class="eq-body">$$\min\,(TL,\; WMD), \quad \max\,\lambda_2$$</div>
+          <div class="eq-note">세 목적함수는 상충 관계(트레이드오프) — 단일 최적해 존재 불가</div>
+        </div>
+
+        <div class="eq-block">
+          <div class="eq-title">파레토 지배 조건</div>
+          <div class="eq-body">$$\mathbf{x} \succ \mathbf{y} \iff \forall i:\; f_i(\mathbf{x}) \leq f_i(\mathbf{y}) \;\wedge\; \exists j:\; f_j(\mathbf{x}) < f_j(\mathbf{y})$$</div>
+        </div>
+
+        <div class="eq-block">
+          <div class="eq-title">Crowding Distance (다양성 보존)</div>
+          <div class="eq-body">$$d_i = \sum_{m=1}^{M} \frac{\left|f_m(i+1) - f_m(i-1)\right|}{f_m^{\max} - f_m^{\min}}$$</div>
+          <div class="eq-note">$d_i$가 클수록 주변 밀집도 낮음 → 우선 선택하여 프론트 다양성 유지</div>
+        </div>
+
+        <div class="eq-block">
+          <div class="eq-title">대수적 연결성 $\lambda_2$ (목적함수)</div>
+          <div class="eq-body">$$L = D - A, \quad 0 = \lambda_1 \leq \lambda_2 \leq \cdots \leq \lambda_n$$</div>
+          <div class="eq-note">$\lambda_2 > 0$ iff 연결 그래프, 클수록 분리 저항 강함</div>
+        </div>
+
+        <div class="key-finding">
+          <h4>핵심 발견 — 실제 서울의 위치</h4>
+          <ul>
+            <li>$TL$·$WMD$ 기준: 파레토 프론트에 근접 (준수한 효율성)</li>
+            <li>$\lambda_2$ 기준: 프론트 하방 위치 → <strong>개선 여지 존재</strong></li>
+            <li>특정 환승역 집중으로 인한 구조적 취약점 확인</li>
+          </ul>
+          <p class="finding-note">현행 서울 지하철은 수요 집중 구간에 과도하게 최적화되어 강건성 측면에서 한계</p>
+        </div>
+      </div>
+
+      <div class="ad-visuals">
+        <div class="viz-card" onclick="openModal(this)">
+          <img src="images/pareto_3d.png" alt="3D 파레토 프론트" />
+          <div class="viz-caption">
+            <strong>$TL$–$WMD$–$\lambda_2$ 3차원 파레토 최적해 (50개)</strong>
+            <span>◆ 실제 서울 지하철 · ★ 호선 기반 알고리즘의 상대적 위치</span>
+          </div>
+        </div>
+        <div class="viz-card" onclick="openModal(this)">
+          <img src="images/pareto_2d.png" alt="2D 파레토 투영" />
+          <div class="viz-caption">
+            <strong>파레토 프론트 2차원 투영 (4가지 관점)</strong>
+            <span>$TL$–$WMD$, $TL$–$\lambda_2$, $TL$–$FT$, $WMD$–$\lambda_2$</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 페이지 간 이동 -->
+    <div class="page-nav">
+      <a href="algo1.html" class="page-nav-prev">← 이전: 점균류 알고리즘</a>
+      <a href="algo3.html" class="page-nav-next">다음: 호선 기반 노선도 생성 알고리즘 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p class="footer-title">경제성과 신뢰성을 고려한 차세대 지하철 네트워크 생성 알고리즘 연구</p>
+    <p class="footer-sub">제72회 경기도과학전람회 · 산업부문 · 2026</p>
+    <p class="footer-ref">데이터: 서울 열린데이터광장 서울시 역사마스터 정보 &nbsp;|&nbsp; Tero et al. (2010) <em>Science</em> &nbsp;|&nbsp; Král &amp; Král (2019) <em>Applied Sciences</em></p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" class="modal" onclick="closeModal()">
+  <span class="modal-close">✕</span>
+  <img id="modal-img" src="" alt="" />
+  <p id="modal-caption"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

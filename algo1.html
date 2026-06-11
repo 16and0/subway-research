@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>점균류 알고리즘 — 차세대 지하철 네트워크 연구</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false}
+      ],
+      throwOnError:false
+    });"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">SUBWAY<span class="accent">ALG</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#overview">개요</a></li>
+      <li><a href="algo1.html" class="active">점균류</a></li>
+      <li><a href="algo2.html">NSGA-2</a></li>
+      <li><a href="algo3.html">호선 기반</a></li>
+      <li><a href="index.html#compare">비교</a></li>
+      <li><a href="index.html#conclusion">결론</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- ALGORITHM 1: 점균류 -->
+<!-- ============================================================ -->
+<section id="algo1" class="section dark-section detail-page">
+  <div class="container">
+    <a href="index.html#overview" class="back-link">← 연구 개요로 돌아가기</a>
+    <div class="section-label">ALGORITHM 01</div>
+    <h2 class="section-title">점균류 알고리즘</h2>
+    <p class="section-desc">황색망사점균(<em>Physarum polycephalum</em>)의 먹이 탐지 행동을 Hagen–Poiseuille 법칙으로 수치화합니다. 선행 연구(Tero et al., 2010)에서 36개 역에 적용하여 도쿄 철도망과 유사한 네트워크를 자생적으로 탐지함을 확인하였습니다. 본 연구에서는 서울시 313개 역 및 Mumford3 128개 역에 확장·적용하고 매개변수 $\gamma$에 따른 위상 변화를 수학적으로 분석합니다.</p>
+
+    <div class="algo-detail-layout">
+      <div class="ad-explain">
+        <h3>수학적 모델</h3>
+        <p>델로네 삼각분할로 구성된 초기 메쉬에서 출발하여, 흐름이 많은 관은 확장하고 적은 관은 수축시키는 적응형 피드백을 반복합니다.</p>
+
+        <div class="eq-block">
+          <div class="eq-title">유량 방정식 (Hagen–Poiseuille)</div>
+          <div class="eq-body">$$Q_{ij} = D_{ij} \cdot \frac{p_i - p_j}{L_{ij}}$$</div>
+          <div class="eq-note">$D_{ij}$: 관 전도도, $p_i$: 노드 $i$에서의 압력, $L_{ij}$: 관의 길이</div>
+        </div>
+
+        <div class="eq-block">
+          <div class="eq-title">전도도 변화율 (적응형 피드백)</div>
+          <div class="eq-body">$$\frac{dD_{ij}}{dt} = \alpha|Q_{ij}|^\gamma - \mu D_{ij}$$</div>
+          <div class="eq-note">$\alpha=10.0$, $\mu=0.6$, $\gamma$: 핵심 비선형 제어 변수</div>
+        </div>
+
+        <div class="eq-block">
+          <div class="eq-title">각 노드 유량 보존 (키르히호프 법칙)</div>
+          <div class="eq-body">$$\sum_j Q_{ij} = S_i \quad \Rightarrow \quad Lp = S$$</div>
+          <div class="eq-note">$L$: 전도도 가중 라플라시안, 평균 승하차량을 $S_i$로 설정</div>
+        </div>
+
+        <div class="key-finding">
+          <h4>핵심 발견 — $\gamma$에 따른 상전이</h4>
+          <ul>
+            <li><strong>저감마 $\gamma < 1.0$</strong>: 고밀도 네트워크, 높은 $FT \cdot \lambda_2$, 낮은 경제성</li>
+            <li><strong>최적 구간 $1.1 \lesssim \gamma \lesssim 1.4$</strong>: 경제성–신뢰성 균형점</li>
+            <li><strong>고감마 $\gamma > 1.6$</strong>: 트리 구조로 붕괴, $FT \cdot \lambda_2$ 급락</li>
+          </ul>
+          <p class="finding-note">야코비안 행렬 분석으로 $\gamma = 1$ 임계값에서의 네트워크 붕괴 조건을 수학적으로 증명</p>
+        </div>
+
+        <div class="eq-block" style="margin-top:1.2rem">
+          <div class="eq-title">네트워크 붕괴 수학적 증명 — 야코비안</div>
+          <div class="eq-body">$$\left.\frac{\partial \dot{D}_{23}}{\partial D_{23}}\right|_{D_{23}=0} = \alpha\gamma|Q_{23}|^{\gamma-1}\cdot\frac{\partial|Q_{23}|}{\partial D_{23}} - \mu$$</div>
+          <div class="eq-note">$\gamma \geq 1$이면 이 값 $< 0$ → $D_{23}=0$이 안정 평형점 → 간선 영구 소멸</div>
+        </div>
+      </div>
+
+      <div class="ad-visuals">
+        <div class="viz-card-dark" onclick="openModal(this)">
+          <img src="images/slime_gamma_map.png" alt="γ별 서울 노선도 변화" />
+          <div class="viz-cap-dark">
+            <strong>$\gamma$ 값에 따른 서울시 지하철 노선도 변화</strong>
+            <span>$\gamma=0.8$ (고밀도) → $1.3$ → $1.8$ → $2.3$ (트리 구조) — 실제 Matlab 시뮬레이션 결과</span>
+          </div>
+        </div>
+        <div class="viz-card-dark" onclick="openModal(this)">
+          <img src="images/slime_tradeoff.png" alt="MD vs α 트레이드오프" />
+          <div class="viz-cap-dark">
+            <strong>$\gamma$ 변화에 따른 효율성–신뢰성 트레이드오프</strong>
+            <span>Mean Distance(MD) vs. Alpha Index($\alpha$): $\gamma$ 증가 → 연결 다양성($\alpha$) 감소, 효율성 변화</span>
+          </div>
+        </div>
+        <div class="viz-card-dark" onclick="openModal(this)">
+          <img src="images/slime_gamma_networks.png" alt="γ별 네트워크 밀도" />
+          <div class="viz-cap-dark">
+            <strong>$\gamma=1.0$ (좌) / $1.6$ (중) / $2.2$ (우) 네트워크 밀도 비교</strong>
+            <span>반복 횟수 250회 수렴 결과 — $\gamma$ 증가에 따른 간선 소실 확인</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 페이지 간 이동 -->
+    <div class="page-nav">
+      <span class="page-nav-spacer"></span>
+      <a href="algo2.html" class="page-nav-next">다음: NSGA-2 다목적 유전 알고리즘 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p class="footer-title">경제성과 신뢰성을 고려한 차세대 지하철 네트워크 생성 알고리즘 연구</p>
+    <p class="footer-sub">제72회 경기도과학전람회 · 산업부문 · 2026</p>
+    <p class="footer-ref">데이터: 서울 열린데이터광장 서울시 역사마스터 정보 &nbsp;|&nbsp; Tero et al. (2010) <em>Science</em> &nbsp;|&nbsp; Král &amp; Král (2019) <em>Applied Sciences</em></p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" class="modal" onclick="closeModal()">
+  <span class="modal-close">✕</span>
+  <img id="modal-img" src="" alt="" />
+  <p id="modal-caption"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
