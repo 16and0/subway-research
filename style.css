@@ -507,6 +507,29 @@ code {
 .cs-slime { border-left:4px solid #4C72B0; }
 .cs-nsga  { border-left:4px solid #DD8452; }
 .cs-algo  { border-left:4px solid #55A868; }
+.cs-featured { box-shadow: 0 0 0 2px rgba(85,168,104,.35), var(--shadow); background:#f0fdf4; }
+
+/* 비교 — 오각형 레이더 + 분석 패널 */
+.chart-img { padding: .8rem; cursor: pointer; display: flex; align-items: center; }
+.chart-img img { width: 100%; border-radius: 8px; transition: transform .2s; }
+.chart-img:hover img { transform: scale(1.01); }
+
+.compare-analysis { display: flex; flex-direction: column; gap: 1rem; }
+.ca-title { font-size: 1.15rem; font-weight: 800; }
+.ca-lead  { font-size: .92rem; color: var(--muted); line-height: 1.6; }
+.ca-axes {
+  list-style: none; display: grid; gap: .35rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .9rem 1.1rem; box-shadow: var(--shadow);
+}
+.ca-axes li { font-size: .86rem; color: #475569; line-height: 1.5; }
+.ca-axes b  { color: var(--text); }
+.ca-conclusion {
+  font-size: .92rem; line-height: 1.7; color: #334155;
+  background: linear-gradient(135deg,#eff6ff,#f0fdf4);
+  border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 1rem 1.2rem;
+}
+.compare-metrics { margin-top: 2.4rem; }
 
 .extra-viz-grid {
   display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem;

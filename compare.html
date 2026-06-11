@@ -45,54 +45,67 @@
     <p class="section-desc">서울시 지하철(403역) 적용 결과를 실제 서울 지하철과 비교합니다.</p>
 
     <div class="compare-layout">
-      <div class="chart-box">
-        <canvas id="metricsChart"></canvas>
+      <div class="chart-box chart-img" onclick="openModal(this)">
+        <img src="images/KakaoTalk_20260608_234505956.png" alt="알고리즘별 성능 다각적 비교 — 오각형 레이더 차트" />
       </div>
-      <div class="compare-table-wrap">
-        <table class="metrics-table">
-          <thead>
-            <tr><th>알고리즘</th><th>$TL$ (km)</th><th>$WMD$ (km)</th><th>$FT$</th><th>특징</th></tr>
-          </thead>
-          <tbody>
-            <tr class="row-reference">
-              <td><strong>실제 서울 지하철</strong></td>
-              <td>423.93</td><td>12.07</td><td>0.889</td>
-              <td class="tag-neutral">참조 기준</td>
-            </tr>
-            <tr>
-              <td>🧫 점균류 알고리즘</td>
-              <td>&gt;4000</td><td>~10</td><td>&gt;0.93</td>
-              <td class="tag-good">최고 신뢰성</td>
-            </tr>
-            <tr>
-              <td>🧬 NSGA-2 (최적해)</td>
-              <td>다양</td><td>다양</td><td>다양</td>
-              <td class="tag-neutral">파레토 50개 해</td>
-            </tr>
-            <tr class="row-highlight">
-              <td>🗺️ 호선 기반 알고리즘</td>
-              <td>444.08</td><td>12.61</td><td class="good-val">0.930</td>
-              <td class="tag-best">균형 최적</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="compare-analysis">
+        <h3 class="ca-title">다섯 축으로 본 세 알고리즘</h3>
+        <p class="ca-lead">바깥쪽으로 뻗을수록 그 항목이 우수합니다. 서울시 노선도 기준, 다섯 항목을 정규화해 비교했습니다.</p>
+        <ul class="ca-axes">
+          <li><b>경제성 (TL)</b> — 총 길이가 짧을수록</li>
+          <li><b>이동 효율 (MD)</b> — 평균 이동거리가 짧을수록</li>
+          <li><b>신뢰성 (FT)</b> — 고장 허용성이 높을수록</li>
+          <li><b>연결성 ($\lambda_2$)</b> — 대수적 연결성이 높을수록</li>
+          <li><b>실용성 (호선 구조)</b> — 실제 노선도 형태로 산출되는가</li>
+        </ul>
 
         <div class="compare-summary">
           <div class="cs-item cs-slime">
             <div class="cs-icon">🧫</div>
-            <div><strong>점균류</strong>: 최고 신뢰성, $TL$은 실제의 10배 이상. $\gamma \in [1.1,\,1.4]$ 구간에서 균형점 존재.</div>
+            <div><strong>점균류</strong> — <b>신뢰성·연결성</b> 축으로 가장 크게 뻗지만 <b>경제성·이동효율·실용성</b>은 안쪽에 머뭅니다. 망이 과밀해 튼튼하지만 비싸고 비현실적인 <em>신뢰성 특화형</em>.</div>
           </div>
           <div class="cs-item cs-nsga">
             <div class="cs-icon">🧬</div>
-            <div><strong>NSGA-2</strong>: 경제성–신뢰성 파레토 최적해 제공. 실제 서울은 $\lambda_2$ 측면에서 프론트 하방에 위치.</div>
+            <div><strong>NSGA-II</strong> — <b>경제성·이동효율·연결성</b>에서 최외곽으로, 수치 최적화답게 효율은 최강입니다. 그러나 <b>신뢰성</b>이 가장 안쪽이고 <b>실용성</b>도 낮아, 실제 노선 형태가 아닌 <em>추상적 최적해</em>에 가깝습니다.</div>
           </div>
-          <div class="cs-item cs-algo">
+          <div class="cs-item cs-algo cs-featured">
             <div class="cs-icon">🗺️</div>
-            <div><strong>호선 기반</strong>: $TL$ 소폭 증가 대비 $FT$ 향상 + $Cent$ 50% 감소. 결정론적 재현성 보장.</div>
+            <div><strong>호선 기반 (본 연구)</strong> — <b>실용성에서 압도적 1위</b>(유일하게 실제 호선 구조를 산출)이면서 나머지 네 축도 모두 2위권을 지킵니다. 한쪽으로 뾰족하지 않고 <em>오각형이 가장 고르게 큰</em>, 약점 없는 균형형입니다.</div>
           </div>
         </div>
+
+        <p class="ca-conclusion">점균류는 신뢰성에, NSGA-II는 효율에 치우친 반면, <strong>호선 기반 알고리즘은 다섯 축을 고르게 채우며 실용성까지 확보</strong>합니다 — 이것이 경제성과 신뢰성을 동시에 노린 본 연구의 핵심입니다.</p>
       </div>
     </div>
+
+    <!-- 정량 지표 (실제 서울 대비) -->
+    <table class="metrics-table compare-metrics">
+      <thead>
+        <tr><th>알고리즘</th><th>$TL$ (km)</th><th>$WMD$ (km)</th><th>$FT$</th><th>특징</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-reference">
+          <td><strong>실제 서울 지하철</strong></td>
+          <td>423.93</td><td>12.07</td><td>0.889</td>
+          <td class="tag-neutral">참조 기준</td>
+        </tr>
+        <tr>
+          <td>🧫 점균류 알고리즘</td>
+          <td>&gt;4000</td><td>~10</td><td>&gt;0.93</td>
+          <td class="tag-good">최고 신뢰성</td>
+        </tr>
+        <tr>
+          <td>🧬 NSGA-2 (최적해)</td>
+          <td>다양</td><td>다양</td><td>다양</td>
+          <td class="tag-neutral">파레토 50개 해</td>
+        </tr>
+        <tr class="row-highlight">
+          <td>🗺️ 호선 기반 알고리즘</td>
+          <td>444.08</td><td>12.61</td><td class="good-val">0.930</td>
+          <td class="tag-best">균형 최적</td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- 실제 서울 지하철 + 추가 시각화 -->
     <div class="extra-viz-grid">
@@ -143,7 +156,6 @@
   <p id="modal-caption"></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
