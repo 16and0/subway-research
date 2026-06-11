@@ -639,6 +639,18 @@ footer {
 .stage-right { min-width: 0; max-height: 78vh; overflow-y: auto; padding-right: .2rem; }
 .stage-concept { margin-top: 1rem; display: flex; flex-direction: column; gap: .8rem; }
 .stage-concept .eq-block { margin-bottom: 0; }
+.concept-goal {
+  font-size: .9rem; line-height: 1.6; color: #cbd5e1;
+  background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.3);
+  border-left: 3px solid var(--blue); border-radius: 8px;
+  padding: .7rem .9rem;
+}
+.section:not(.dark-section) .concept-goal { color: #334155; background: #eff6ff; border-color: #bfdbfe; border-left-color: var(--blue); }
+.concept-goal span {
+  display: inline-block; font-size: .72rem; font-weight: 800; color: white;
+  background: var(--blue); border-radius: 999px; padding: .1rem .55rem; margin-right: .5rem;
+  vertical-align: .05em;
+}
 .st-node { fill: #cbd5e1; transition: fill .25s, r .25s, opacity .25s; }
 
 .stage-toolbar {

@@ -10,51 +10,71 @@
   // ── 단계별 개념·수식 설명 (오른쪽 패널) ──────────────────────
   const CONCEPT = {
     1: `
+      <div class="concept-goal"><span>목적</span> 모든 역을 거리 계산이 가능한 평면 좌표로 올려 알고리즘의 입력을 만든다.</div>
       <div class="eq-block">
         <div class="eq-title">등거리 평면 투영</div>
         <div class="eq-body">$$x=(\\text{lon}-\\text{lon}_{\\min})\\,111.32\\cos\\bar\\varphi,\\;\\; y=(\\text{lat}-\\text{lat}_{\\min})\\,111.0$$</div>
-        <div class="eq-note">위·경도(°)를 km로 변환. 이후 거리는 유클리드 $\\lVert u-v\\rVert$.</div>
+        <div class="eq-note">위·경도(°)를 km로 변환(1° ≈ 111 km). 이후 거리는 유클리드 $\\lVert u-v\\rVert$. 403개 역, 아직 간선은 없음.</div>
       </div>`,
     2: `
+      <div class="concept-goal"><span>목적</span> 도시 외곽을 도는 굵은 호선 뼈대를 바깥에서 안으로 한 겹씩 생성한다.</div>
       <div class="eq-block">
         <div class="eq-title">볼록껍질 (Quickhull)</div>
-        <div class="eq-note">점들을 감싸는 최소 볼록 다각형. 껍질 위 가장 먼 두 역 $(u^*,v^*)=\\arg\\max\\lVert u-v\\rVert$을 종점으로.</div>
+        <div class="eq-note">점들을 감싸는 최소 볼록 다각형. 껍질 위 가장 먼 두 역 $(u^*,v^*)=\\arg\\max\\lVert u-v\\rVert$을 호선의 양 종점으로 삼는다.</div>
       </div>
       <div class="eq-block">
         <div class="eq-title">다익스트라 뼈대 · 거리 세제곱 가중</div>
         <div class="eq-body">$$w(u,v)=\\lVert u-v\\rVert^{3}$$</div>
-        <div class="eq-note">세제곱 = 초장거리 페널티. 인접 거리 ≤ 임계 3.5 km만 간선 채택, 안쪽으로 박피 반복.</div>
+        <div class="eq-note">세제곱 가중은 한 번에 멀리 잇는 경로에 큰 페널티 → 가까운 역들을 징검다리로 잇게 유도.</div>
+      </div>
+      <div class="eq-block">
+        <div class="eq-title">중요 조건 · 박피</div>
+        <div class="eq-note">인접 거리 <strong>≤ 임계 3.5 km</strong>인 간선만 채택. 확정한 호선을 빼고 남은 안쪽 점들로 같은 과정을 반복(껍질 박피).</div>
       </div>`,
     3: `
+      <div class="concept-goal"><span>목적</span> 뼈대를 만들며 떨어져 나온 자잘한 조각을 본선에 흡수해 노이즈를 없앤다.</div>
       <div class="eq-block">
-        <div class="eq-title">고립 파편 흡수</div>
-        <div class="eq-note">역 ≤ 3개 조각을 최근접 거대 호선에 편입.<br>
-          ① ≤ 3.5 km 직접 · ② 아니면 재귀 다리(선분까지 ≤ 2.8 km 경유) · ③ 실패 시 지선.</div>
+        <div class="eq-title">고립 파편(orphan) 정의</div>
+        <div class="eq-note">호선에서 끊겨 나온 <strong>역 ≤ 3개</strong>짜리 작은 조각. 가장 가까운 거대 호선에 편입한다.</div>
+      </div>
+      <div class="eq-block">
+        <div class="eq-title">중요 조건 · 연결 방식(단계적)</div>
+        <div class="eq-note">① 두 끝 거리 ≤ 3.5 km → 직접 연결<br>
+          ② 아니면 재귀 다리: 선분까지 거리 ≤ <strong>2.8 km</strong>(=0.8×임계)인 역을 경유<br>
+          ③ 그래도 안 되면 지선으로 직접 연결</div>
       </div>`,
     4: `
+      <div class="concept-goal"><span>목적</span> 한 호선 안에서 끊긴 구간을 이어 하나의 연속된 노선으로 봉합한다.</div>
       <div class="eq-block">
         <div class="eq-title">재귀 봉합 · 선분 투영</div>
         <div class="eq-body">$$t=\\frac{(w-u)\\cdot(v-u)}{\\lVert v-u\\rVert^{2}}$$</div>
-        <div class="eq-note">같은 호선의 끊긴 조각을 최근접 쌍부터: ≤ 3.5 km 직접, 아니면 선분 위 최근접 역을 끼워 재귀.</div>
+        <div class="eq-note">가장 가까운 두 조각부터 잇는다. ≤ 3.5 km면 직접, 아니면 선분 $uv$ 위 가장 가까운 역($t$로 투영)을 끼워 양쪽을 재귀 봉합. 모든 조각이 연결될 때까지 반복.</div>
       </div>`,
     5: `
+      <div class="concept-goal"><span>목적</span> 따로 떨어진 호선들을 최소 비용으로 전부 연결(환승)한다.</div>
       <div class="eq-block">
         <div class="eq-title">최소 신장 트리 (MST)</div>
         <div class="eq-body">$$T^{*}=\\arg\\min\\sum_{(i,j)\\in T} W_{ij}$$</div>
-        <div class="eq-note">호선=정점, 가중치 $W_{ij}=\\min\\lVert u-v\\rVert$. 14호선을 13개 환승 링크로 최소비용 연결.</div>
+        <div class="eq-note">호선을 정점으로, 간선 가중치는 두 호선 사이 가장 가까운 역쌍 거리 $W_{ij}=\\min\\lVert u-v\\rVert$. MST는 사이클 없이 <strong>14호선을 13개 링크</strong>로 최소비용 연결.</div>
       </div>`,
     6: `
+      <div class="concept-goal"><span>목적</span> 가깝지만 크게 우회하는 역쌍에 지름길을 더해 이동거리·중심성을 개선한다.</div>
       <div class="eq-block">
         <div class="eq-title">지름길 채택 조건</div>
         <div class="eq-body">$$d_y \\ge 7\\,d_x \\;\\wedge\\; \\text{hops} > 3$$</div>
-        <div class="eq-note">후보 $d_x\\le 1.5$ km · $d_y$=그래프 최단거리. 사잇각 $\\theta<60^\\circ$ 본선 교체, $\\ge 60^\\circ$ 지선.</div>
+        <div class="eq-note">후보는 직선거리 $d_x\\le 1.5$ km인 역쌍, $d_y$는 현재 그래프 최단거리. 즉 <strong>가까운데(작은 $d_x$) 한참 돌아가는($d_y$ 큼)</strong> 경우만 추가.</div>
+      </div>
+      <div class="eq-block">
+        <div class="eq-title">중요 조건 · 사잇각 분류</div>
+        <div class="eq-note">$\\theta<60^\\circ$ → 본선 편입(기존 간선 교체) · $\\theta\\ge 60^\\circ$ → 지선 편입(추가).</div>
       </div>`,
     7: `
+      <div class="concept-goal"><span>목적</span> 완성된 노선도의 경제성·효율성·신뢰성·분산성을 정량 평가한다.</div>
       <div class="eq-block">
         <div class="eq-title">평가 지표</div>
         <div class="eq-body">$$TL=\\sum_e l_e,\\qquad WMD=\\frac{\\sum d_{uv} w_{uv}}{\\sum w_{uv}}$$</div>
         <div class="eq-body">$$FT=\\frac{|E|-|B|}{|E|},\\qquad Cent=\\frac{\\sum_i(bc_{\\max}-bc_i)}{n-1}$$</div>
-        <div class="eq-note">TL·WMD 낮을수록, FT 높을수록, Cent 낮을수록 우수. $|B|$=브릿지 수.</div>
+        <div class="eq-note">TL·WMD 낮을수록, FT 높을수록, Cent 낮을수록 우수. $|B|$=브릿지(끊기면 망이 분리되는 간선) 수.</div>
       </div>`
   };
 
