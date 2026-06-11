@@ -621,17 +621,24 @@ footer {
 .st-btn:hover { background: rgba(59,130,246,.24); transform: translateY(-1px); }
 .st-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
 
+/* 좌(노선도) / 우(개념·수식) 2단 배치 */
+.stage-layout {
+  display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.6rem; align-items: start;
+}
+.stage-left { min-width: 0; }
 .stage-stage {
   background: #f8fafc;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: var(--radius);
   padding: .7rem; box-shadow: var(--shadow);
-  /* 지도 비율(약 1.26:1)에 맞춰 박스 폭을 높이에 연동 → 좌우 여백 최소화 + 가운데 정렬 */
-  max-width: calc(56vh * 1.26);
-  margin: 0 auto;
 }
-/* 비율 유지하며 한 화면(버튼 포함)에 들어오도록 높이 제한 */
-#stageSvg { width: 100%; height: auto; max-height: 56vh; display: block; margin: 0 auto; }
+/* 비율 유지하며 한 화면에 들어오도록 높이 제한 */
+#stageSvg { width: 100%; height: auto; max-height: 72vh; display: block; margin: 0 auto; }
+
+/* 오른쪽 개념·수식 패널 — 길면 자체 스크롤 */
+.stage-right { min-width: 0; max-height: 78vh; overflow-y: auto; padding-right: .2rem; }
+.stage-concept { margin-top: 1rem; display: flex; flex-direction: column; gap: .8rem; }
+.stage-concept .eq-block { margin-bottom: 0; }
 .st-node { fill: #cbd5e1; transition: fill .25s, r .25s, opacity .25s; }
 
 .stage-toolbar {
@@ -706,6 +713,12 @@ footer {
 .next-cta-card p  { font-size: .9rem; color: var(--muted); line-height: 1.6; }
 
 /* ── RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 920px) {
+  .stage-layout { grid-template-columns: 1fr; }
+  .stage-right { max-height: none; overflow: visible; }
+  #stageSvg { max-height: 62vh; }
+}
+
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .hero-metrics { gap: 1.4rem; }

@@ -153,24 +153,30 @@
         <button class="st-btn" data-stage="7">7 지표 연산</button>
       </div>
 
-      <div class="stage-stage">
-        <svg id="stageSvg" role="img" aria-label="단계별 노선도"></svg>
-      </div>
-
-      <div class="stage-toolbar">
-        <button id="stPrev" class="st-nav">← 이전</button>
-        <button id="stPlay" class="st-play">▶ 자동 재생</button>
-        <button id="stNext" class="st-nav">다음 →</button>
-        <span id="stCount" class="stage-count"></span>
-      </div>
-
-      <div class="stage-info">
-        <div class="stage-info-head">
-          <span class="stage-badge"><span id="stNum">1</span></span>
-          <h4 id="stTitle"></h4>
+      <div class="stage-layout">
+        <div class="stage-left">
+          <div class="stage-stage">
+            <svg id="stageSvg" role="img" aria-label="단계별 노선도"></svg>
+          </div>
+          <div class="stage-toolbar">
+            <button id="stPrev" class="st-nav">← 이전</button>
+            <button id="stPlay" class="st-play">▶ 자동 재생</button>
+            <button id="stNext" class="st-nav">다음 →</button>
+            <span id="stCount" class="stage-count"></span>
+          </div>
         </div>
-        <p id="stDesc"></p>
-        <div id="stMetrics" class="stage-metrics"></div>
+
+        <div class="stage-right">
+          <div class="stage-info">
+            <div class="stage-info-head">
+              <span class="stage-badge"><span id="stNum">1</span></span>
+              <h4 id="stTitle"></h4>
+            </div>
+            <p id="stDesc"></p>
+          </div>
+          <div id="stConcept" class="stage-concept"></div>
+          <div id="stMetrics" class="stage-metrics"></div>
+        </div>
       </div>
     </div>
 
