@@ -62,19 +62,19 @@
         <div class="compare-summary">
           <div class="cs-item cs-slime">
             <div class="cs-icon">🧫</div>
-            <div><strong>점균류</strong> — <b>신뢰성·연결성</b> 축으로 가장 크게 뻗지만 <b>경제성·이동효율·실용성</b>은 안쪽에 머뭅니다. 망이 과밀해 튼튼하지만 비싸고 비현실적인 <em>신뢰성 특화형</em>.</div>
+            <div><strong>점균류</strong> — <b>신뢰성·연결성</b> 축이 크고 <b>경제성·이동효율·실용성</b>은 안쪽입니다. 망이 촘촘해 튼튼한 대신 총 길이가 길어 경제성이 낮습니다.</div>
           </div>
           <div class="cs-item cs-nsga">
             <div class="cs-icon">🧬</div>
-            <div><strong>NSGA-II</strong> — <b>경제성·이동효율·연결성</b>에서 최외곽으로, 수치 최적화답게 효율은 최강입니다. 그러나 <b>신뢰성</b>이 가장 안쪽이고 <b>실용성</b>도 낮아, 실제 노선 형태가 아닌 <em>추상적 최적해</em>에 가깝습니다.</div>
+            <div><strong>NSGA-II</strong> — <b>경제성·이동효율·연결성</b> 축이 크고 <b>신뢰성·실용성</b>은 안쪽입니다. 수치 효율은 높지만 결과가 실제 노선 형태로 나오지는 않습니다.</div>
           </div>
-          <div class="cs-item cs-algo cs-featured">
+          <div class="cs-item cs-algo">
             <div class="cs-icon">🗺️</div>
-            <div><strong>호선 기반 (본 연구)</strong> — <b>실용성에서 압도적 1위</b>(유일하게 실제 호선 구조를 산출)이면서 나머지 네 축도 모두 2위권을 지킵니다. 한쪽으로 뾰족하지 않고 <em>오각형이 가장 고르게 큰</em>, 약점 없는 균형형입니다.</div>
+            <div><strong>호선 기반</strong> — <b>실용성</b> 축이 크고 나머지 네 축은 중간 수준입니다. 특정 축에 치우치지 않고 고르게 분포합니다.</div>
           </div>
         </div>
 
-        <p class="ca-conclusion">점균류는 신뢰성에, NSGA-II는 효율에 치우친 반면, <strong>호선 기반 알고리즘은 다섯 축을 고르게 채우며 실용성까지 확보</strong>합니다 — 이것이 경제성과 신뢰성을 동시에 노린 본 연구의 핵심입니다.</p>
+        <p class="ca-conclusion">세 알고리즘은 각기 다른 축에 강점을 둡니다 — 점균류는 신뢰성, NSGA-II는 효율, 호선 기반은 실용성과 고른 분포. 어느 하나가 절대적으로 우수하기보다, 설계 목적에 따라 적합한 알고리즘이 달라집니다.</p>
       </div>
     </div>
 
@@ -92,17 +92,17 @@
         <tr>
           <td>🧫 점균류 알고리즘</td>
           <td>&gt;4000</td><td>~10</td><td>&gt;0.93</td>
-          <td class="tag-good">최고 신뢰성</td>
+          <td class="tag-neutral">신뢰성 우위</td>
         </tr>
         <tr>
           <td>🧬 NSGA-2 (최적해)</td>
           <td>다양</td><td>다양</td><td>다양</td>
           <td class="tag-neutral">파레토 50개 해</td>
         </tr>
-        <tr class="row-highlight">
+        <tr>
           <td>🗺️ 호선 기반 알고리즘</td>
-          <td>444.08</td><td>12.61</td><td class="good-val">0.930</td>
-          <td class="tag-best">균형 최적</td>
+          <td>444.08</td><td>12.61</td><td>0.930</td>
+          <td class="tag-neutral">고른 분포</td>
         </tr>
       </tbody>
     </table>
