@@ -83,29 +83,51 @@
     const prevPairs  = new Set((prev ? prev.edges : []).map(e => pairKey(e.u, e.v)));
     const prevActive = new Set(prev ? prev.activeNodes : []);
 
-    const newEdges = stage.edges.filter(e => !prevPairs.has(pairKey(e.u, e.v)));
-    const hasNew   = newEdges.length > 0;   // 변화가 없으면(예: 7단계) 전체를 밝게
+    const newEdges  = stage.edges.filter(e => !prevPairs.has(pairKey(e.u, e.v)));
+    const isInitial = prevPairs.size === 0;         // 첫 생성(2단계): 전체를 컬러로
+    const hasNew    = newEdges.length > 0 && !isInitial;
 
-    // 간선: 기존(어둡게) → 새 간선 글로우 → 새 간선(밝게) 순으로 쌓기
+    // 노드 → 소속 호선(레이어) 매핑 (환승 간선이 잇는 호선 판별용)
+    const nodeLayer = {};
+    stage.edges.forEach(e => {
+      if (e.layer >= 0) { nodeLayer[e.u] = e.layer; nodeLayer[e.v] = e.layer; }
+    });
+    // 이번 단계에 새 간선이 잇는(=강조할) 호선 집합
+    const involved = new Set();
+    if (hasNew) newEdges.forEach(e => {
+      if (e.layer >= 0) involved.add(e.layer);
+      else {                                        // 환승 간선: 양 끝점의 호선
+        if (nodeLayer[e.u] != null) involved.add(nodeLayer[e.u]);
+        if (nodeLayer[e.v] != null) involved.add(nodeLayer[e.v]);
+      }
+    });
+
+    // 쌓는 순서: 디밍(맨 아래) → 강조 호선 → 새 간선 글로우 → 새 간선(맨 위)
     gEdges.replaceChildren();
-    const newLines = [];   // 위에 올릴 새 간선
+    const hostLines = [], glowLines = [], newLines = [];
 
     stage.edges.forEach(e => {
       const a = DATA.nodes[e.u], b = DATA.nodes[e.v];
       const s = styleForKind(e.kind, e.layer);
-      const isNew = !prevPairs.has(pairKey(e.u, e.v));
+      const isNew = hasNew && !prevPairs.has(pairKey(e.u, e.v));
 
-      if (hasNew && !isNew) {
-        // 이전 단계부터 있던 간선 → 어둡게 디밍
-        gEdges.appendChild(mkLine(a, b, s.stroke, s.width, s.dash, 0.22));
+      if (isInitial || !hasNew) {
+        // 2단계(첫 생성) 또는 변화 없는 단계(7) → 전체 컬러로 밝게
+        gEdges.appendChild(mkLine(a, b, s.stroke, s.width, s.dash, e.kind === 'transfer' ? 0.55 : 0.95));
+      } else if (isNew) {
+        // 이번 단계 새 간선 → 앰버 글로우 + 앰버 본선(종류 불문 확실히 보임)
+        glowLines.push(mkLine(a, b, HI, s.width + 7, null, 0.35));
+        newLines.push(mkLine(a, b, HI, s.width + 1.4, s.dash, 1));
+      } else if (e.layer >= 0 && involved.has(e.layer)) {
+        // 새 간선이 잇는 호선 → 자기 색으로 또렷하게(다른 느낌)
+        hostLines.push(mkLine(a, b, s.stroke, s.width, s.dash, 0.9));
       } else {
-        // 이번 단계에 새로 생긴 간선(또는 변화 없는 단계의 전체) → 글로우 + 밝게
-        if (isNew) {
-          gEdges.appendChild(mkLine(a, b, s.stroke, s.width + 6, null, 0.28)); // 글로우 헤일로
-        }
-        newLines.push(mkLine(a, b, s.stroke, s.width + (isNew ? 0.6 : 0), s.dash, 1));
+        // 무관한 기존 간선 → 어둡게 디밍
+        gEdges.appendChild(mkLine(a, b, s.stroke, s.width, s.dash, 0.18));
       }
     });
+    hostLines.forEach(ln => gEdges.appendChild(ln));
+    glowLines.forEach(ln => gEdges.appendChild(ln));
     newLines.forEach(ln => gEdges.appendChild(ln));
 
     // 노드: 연결된 역도 옅게, 이번 단계에 새로 연결된 역만 하이라이트
