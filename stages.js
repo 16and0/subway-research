@@ -35,12 +35,13 @@
   svg.appendChild(gEdges);
   svg.appendChild(gNodes);
 
-  // 모든 역 점은 항상 깔아둠(연결 안 된 역은 흐리게)
+  // 모든 역 점은 항상 깔아둠 — 아주 옅게(검정 점 없앰)
+  const HI = '#f59e0b';   // 변화 하이라이트 색(앰버)
   const nodeEls = DATA.nodes.map((n, i) => {
     const c = document.createElementNS(SVGNS, 'circle');
     c.setAttribute('cx', px(n.x));
     c.setAttribute('cy', py(n.y));
-    c.setAttribute('r', 2.2);
+    c.setAttribute('r', 1.3);
     c.setAttribute('class', 'st-node');
     const t = document.createElementNS(SVGNS, 'title');
     t.textContent = n.name;
@@ -51,10 +52,24 @@
 
   function styleForKind(kind, layer) {
     const color = layer >= 0 ? LAYER_COLORS[layer % LAYER_COLORS.length] : '#94a3b8';
-    if (kind === 'transfer') return { stroke: '#94a3b8', width: 1.2, dash: '2 3', opacity: 0.6 };
-    if (kind === 'main')     return { stroke: color, width: 3.4, dash: '6 4', opacity: 0.95 };
-    if (kind === 'branch')   return { stroke: color, width: 1.8, dash: null,  opacity: 0.9 };
-    return { stroke: color, width: 2.3, dash: null, opacity: 0.92 };          // normal
+    if (kind === 'transfer') return { stroke: '#94a3b8', width: 1.4, dash: '2 3' };
+    if (kind === 'main')     return { stroke: color, width: 3.4, dash: '6 4' };
+    if (kind === 'branch')   return { stroke: color, width: 1.9, dash: null  };
+    return { stroke: color, width: 2.4, dash: null };          // normal
+  }
+
+  const pairKey = (u, v) => (u < v ? u + '_' + v : v + '_' + u);
+
+  function mkLine(a, b, stroke, width, dash, opacity) {
+    const ln = document.createElementNS(SVGNS, 'line');
+    ln.setAttribute('x1', px(a.x)); ln.setAttribute('y1', py(a.y));
+    ln.setAttribute('x2', px(b.x)); ln.setAttribute('y2', py(b.y));
+    ln.setAttribute('stroke', stroke);
+    ln.setAttribute('stroke-width', width);
+    ln.setAttribute('stroke-linecap', 'round');
+    ln.setAttribute('opacity', opacity);
+    if (dash) ln.setAttribute('stroke-dasharray', dash);
+    return ln;
   }
 
   // ── 한 단계 렌더 ───────────────────────────────────────────
@@ -62,28 +77,50 @@
   function render(stageIdx) {
     current = stageIdx;
     const stage = DATA.stages[stageIdx - 1];
+    const prev  = stageIdx > 1 ? DATA.stages[stageIdx - 2] : null;
 
-    // 간선 다시 그림
+    // 이전 단계의 간선/연결역 (변화 감지용)
+    const prevPairs  = new Set((prev ? prev.edges : []).map(e => pairKey(e.u, e.v)));
+    const prevActive = new Set(prev ? prev.activeNodes : []);
+
+    const newEdges = stage.edges.filter(e => !prevPairs.has(pairKey(e.u, e.v)));
+    const hasNew   = newEdges.length > 0;   // 변화가 없으면(예: 7단계) 전체를 밝게
+
+    // 간선: 기존(어둡게) → 새 간선 글로우 → 새 간선(밝게) 순으로 쌓기
     gEdges.replaceChildren();
+    const newLines = [];   // 위에 올릴 새 간선
+
     stage.edges.forEach(e => {
       const a = DATA.nodes[e.u], b = DATA.nodes[e.v];
-      const ln = document.createElementNS(SVGNS, 'line');
-      ln.setAttribute('x1', px(a.x)); ln.setAttribute('y1', py(a.y));
-      ln.setAttribute('x2', px(b.x)); ln.setAttribute('y2', py(b.y));
       const s = styleForKind(e.kind, e.layer);
-      ln.setAttribute('stroke', s.stroke);
-      ln.setAttribute('stroke-width', s.width);
-      ln.setAttribute('stroke-linecap', 'round');
-      ln.setAttribute('opacity', s.opacity);
-      if (s.dash) ln.setAttribute('stroke-dasharray', s.dash);
-      gEdges.appendChild(ln);
-    });
+      const isNew = !prevPairs.has(pairKey(e.u, e.v));
 
-    // 연결된 역 강조
+      if (hasNew && !isNew) {
+        // 이전 단계부터 있던 간선 → 어둡게 디밍
+        gEdges.appendChild(mkLine(a, b, s.stroke, s.width, s.dash, 0.22));
+      } else {
+        // 이번 단계에 새로 생긴 간선(또는 변화 없는 단계의 전체) → 글로우 + 밝게
+        if (isNew) {
+          gEdges.appendChild(mkLine(a, b, s.stroke, s.width + 6, null, 0.28)); // 글로우 헤일로
+        }
+        newLines.push(mkLine(a, b, s.stroke, s.width + (isNew ? 0.6 : 0), s.dash, 1));
+      }
+    });
+    newLines.forEach(ln => gEdges.appendChild(ln));
+
+    // 노드: 연결된 역도 옅게, 이번 단계에 새로 연결된 역만 하이라이트
     const active = new Set(stage.activeNodes);
     nodeEls.forEach((c, i) => {
-      if (active.has(i)) { c.setAttribute('r', 2.8); c.classList.add('on'); }
-      else               { c.setAttribute('r', 2.2); c.classList.remove('on'); }
+      const on    = active.has(i);
+      const isNew = on && hasNew && !prevActive.has(i);
+      if (isNew) {
+        c.setAttribute('r', 2.8); c.setAttribute('fill', HI);
+        c.setAttribute('opacity', 1); c.style.filter = 'none';
+      } else if (on) {
+        c.setAttribute('r', 1.3); c.setAttribute('fill', '#94a3b8'); c.setAttribute('opacity', 0.5);
+      } else {
+        c.setAttribute('r', 1.3); c.setAttribute('fill', '#cbd5e1'); c.setAttribute('opacity', 0.4);
+      }
     });
 
     // 버튼 활성 상태
@@ -96,9 +133,10 @@
     document.getElementById('stTitle').textContent = stage.title;
     document.getElementById('stDesc').textContent = stage.desc;
 
-    // 통계 (간선/연결역) + 최종 지표
+    // 통계 (간선/연결역, 이번 단계 추가량) + 최종 지표
     const countEl = document.getElementById('stCount');
-    countEl.textContent = `연결된 역 ${active.size}개 · 간선 ${stage.edges.length}개`;
+    const addTxt = hasNew ? ` · 이번 단계 추가 ${newEdges.length}개(밝게 강조)` : '';
+    countEl.textContent = `연결된 역 ${active.size}개 · 간선 ${stage.edges.length}개${addTxt}`;
 
     const mEl = document.getElementById('stMetrics');
     if (stage.metrics) {

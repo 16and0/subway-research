@@ -628,8 +628,7 @@ footer {
   padding: 1rem; box-shadow: var(--shadow);
 }
 #stageSvg { width: 100%; height: auto; display: block; }
-.st-node { fill: #cbd5e1; transition: fill .25s, r .25s; }
-.st-node.on { fill: #1e293b; }
+.st-node { fill: #cbd5e1; transition: fill .25s, r .25s, opacity .25s; }
 
 .stage-toolbar {
   display: flex; align-items: center; gap: .6rem;
