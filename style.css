@@ -625,9 +625,13 @@ footer {
   background: #f8fafc;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: var(--radius);
-  padding: 1rem; box-shadow: var(--shadow);
+  padding: .7rem; box-shadow: var(--shadow);
+  /* 지도 비율(약 1.26:1)에 맞춰 박스 폭을 높이에 연동 → 좌우 여백 최소화 + 가운데 정렬 */
+  max-width: calc(56vh * 1.26);
+  margin: 0 auto;
 }
-#stageSvg { width: 100%; height: auto; display: block; }
+/* 비율 유지하며 한 화면(버튼 포함)에 들어오도록 높이 제한 */
+#stageSvg { width: 100%; height: auto; max-height: 56vh; display: block; margin: 0 auto; }
 .st-node { fill: #cbd5e1; transition: fill .25s, r .25s, opacity .25s; }
 
 .stage-toolbar {
