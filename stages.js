@@ -82,19 +82,27 @@
     // 이전 단계의 간선/연결역 (변화 감지용)
     const prevPairs  = new Set((prev ? prev.edges : []).map(e => pairKey(e.u, e.v)));
     const prevActive = new Set(prev ? prev.activeNodes : []);
+    // (역쌍 + 소속 호선) 조합 — 같은 역쌍이 여러 호선에 있어도 오탐 없게
+    const prevKL     = new Set((prev ? prev.edges : []).map(e => pairKey(e.u, e.v) + '|' + e.layer));
+    const isInitial  = prevPairs.size === 0;        // 첫 생성(2단계): 전체를 컬러로
 
-    const newEdges  = stage.edges.filter(e => !prevPairs.has(pairKey(e.u, e.v)));
-    const isInitial = prevPairs.size === 0;         // 첫 생성(2단계): 전체를 컬러로
-    const hasNew    = newEdges.length > 0 && !isInitial;
+    // 이번 단계의 '변화' 간선 = 새로 생겼거나(흡수 다리·환승·지름길)
+    //   소속 호선이 바뀐(=다른 호선으로 흡수된 조각) 간선. 단 connector(지름길 보조)는 제외.
+    function changeOf(e) {
+      if (e.kind === 'connector') return false;
+      return !prevKL.has(pairKey(e.u, e.v) + '|' + e.layer);
+    }
+    const changedEdges = isInitial ? [] : stage.edges.filter(changeOf);
+    const hasNew = changedEdges.length > 0;
 
     // 노드 → 소속 호선(레이어) 매핑 (환승 간선이 잇는 호선 판별용)
     const nodeLayer = {};
     stage.edges.forEach(e => {
       if (e.layer >= 0) { nodeLayer[e.u] = e.layer; nodeLayer[e.v] = e.layer; }
     });
-    // 이번 단계에 새 간선이 잇는(=강조할) 호선 집합
+    // 이번 단계에 변화 간선이 잇는(=강조할) 호선 집합
     const involved = new Set();
-    if (hasNew) newEdges.forEach(e => {
+    changedEdges.forEach(e => {
       if (e.layer >= 0) involved.add(e.layer);
       else {                                        // 환승 간선: 양 끝점의 호선
         if (nodeLayer[e.u] != null) involved.add(nodeLayer[e.u]);
@@ -102,24 +110,23 @@
       }
     });
 
-    // 쌓는 순서: 디밍(맨 아래) → 강조 호선 → 새 간선 글로우 → 새 간선(맨 위)
+    // 쌓는 순서: 디밍(맨 아래) → 강조 호선 → 변화 간선 글로우 → 변화 간선(맨 위)
     gEdges.replaceChildren();
     const hostLines = [], glowLines = [], newLines = [];
 
     stage.edges.forEach(e => {
       const a = DATA.nodes[e.u], b = DATA.nodes[e.v];
       const s = styleForKind(e.kind, e.layer);
-      const isNew = hasNew && !prevPairs.has(pairKey(e.u, e.v));
 
       if (isInitial || !hasNew) {
         // 2단계(첫 생성) 또는 변화 없는 단계(7) → 전체 컬러로 밝게
         gEdges.appendChild(mkLine(a, b, s.stroke, s.width, s.dash, e.kind === 'transfer' ? 0.55 : 0.95));
-      } else if (isNew) {
-        // 이번 단계 새 간선 → 앰버 글로우 + 앰버 본선(종류 불문 확실히 보임)
+      } else if (changeOf(e)) {
+        // 이번 단계 변화 간선 → 앰버 글로우 + 앰버 본선(종류 불문 확실히 보임)
         glowLines.push(mkLine(a, b, HI, s.width + 7, null, 0.35));
         newLines.push(mkLine(a, b, HI, s.width + 1.4, s.dash, 1));
       } else if (e.layer >= 0 && involved.has(e.layer)) {
-        // 새 간선이 잇는 호선 → 자기 색으로 또렷하게(다른 느낌)
+        // 변화 간선이 잇는 호선 → 자기 색으로 또렷하게(다른 느낌)
         hostLines.push(mkLine(a, b, s.stroke, s.width, s.dash, 0.9));
       } else {
         // 무관한 기존 간선 → 어둡게 디밍
@@ -157,7 +164,7 @@
 
     // 통계 (간선/연결역, 이번 단계 추가량) + 최종 지표
     const countEl = document.getElementById('stCount');
-    const addTxt = hasNew ? ` · 이번 단계 추가 ${newEdges.length}개(밝게 강조)` : '';
+    const addTxt = hasNew ? ` · 이번 단계 변화 ${changedEdges.length}개(밝게 강조)` : '';
     countEl.textContent = `연결된 역 ${active.size}개 · 간선 ${stage.edges.length}개${addTxt}`;
 
     const mEl = document.getElementById('stMetrics');
